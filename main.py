@@ -5,6 +5,17 @@ from telebot import types
 
 bot = telebot.TeleBot(config.TOKEN)
 
+user_dict = {}
+
+
+class User:
+    def __init__(self, surname, name, group=1):
+        self.surname = surname
+        self.name = name
+        # group == 1 -- teacher
+        self.group = group
+
+
 @bot.message_handler(commands=['start'])
 def welcome(message):
     #sti = open('./sticker.webp', 'rb')
@@ -76,4 +87,14 @@ def callback_inline(call):
         print(repr(e))
 
 # RUN
+
+# Enable saving next step handlers to file "./.handlers-saves/step.save".
+# Delay=2 means that after any change in next step handlers (e.g. calling register_next_step_handler())
+# saving will hapen after delay 2 seconds.
+bot.enable_save_next_step_handlers(delay=2)
+
+# Load next_step_handlers from save file (default "./.handlers-saves/step.save")
+# WARNING It will work only if enable_save_next_step_handlers was called!
+bot.load_next_step_handlers()
+
 bot.polling(none_stop=True)
