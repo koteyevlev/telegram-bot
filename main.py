@@ -5,16 +5,6 @@ from telebot import types
 
 bot = telebot.TeleBot(config.TOKEN)
 
-user_dict = {}
-
-
-class User:
-    def __init__(self, surname, name, group=1):
-        self.surname = surname
-        self.name = name
-        # group == 1 -- teacher
-        self.group = group
-
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
@@ -22,55 +12,61 @@ def welcome(message):
     #bot.send_sticker(message.chat.id, sti)
 
     #keyboard
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    teacher = types.KeyboardButton("Преподаватель")
-    student = types.KeyboardButton("Студент")
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    teacher = types.InlineKeyboardButton("Преподаватель", callback_data='p')
+    student = types.InlineKeyboardButton("Студент", callback_data='s')
     markup.add(teacher, student)
 
-    bot.send_message(message.chat.id, "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>!\nБот созданный для проверки домашних заданий".format(message.from_user,bot.get_me()),
+    bot.send_message(message.chat.id, "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>!\nБот созданный для проверки домашних заданий".format(message.from_user, bot.get_me()),
                      parse_mode='html', reply_markup=markup)
 
-@bot.message_handler(content_types=['text'])
+
+@bot.callback_query_handler(func=lambda call: call.data == 'p' or call.data == 's')
 def user_parser(message):
-    if message.chat.type == 'private':
-        if message.text == 'Преподаватель':
+    if True:
+        bot.edit_message_text(chat_id=message.message.chat.id, message_id=message.message.message_id,
+                              text="Выберите необходимое действие",
+                              reply_markup=None)
+        if message.data == 'p':
 
-            markup = types.InlineKeyboardMarkup(row_width=2)
-            item1 = types.InlineKeyboardButton("Мои тесты", callback_data='test_teach')
-            item2 = types.InlineKeyboardButton("Создать тест", callback_data='create_test')
-            item3 = types.InlineKeyboardButton("Выгрузить результаты", callback_data='results')
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            item1 = types.KeyboardButton("Текущие тесты")
+            item2 = types.KeyboardButton("Создать тест")
+            item3 = types.KeyboardButton("Выгрузить результаты")
 
-            markup.add(item1, item2, item3)
+            markup.add(item1, item2)
+            markup.add(item3)
 
-            bot.send_message(message.chat.id, "*Интерфейс для преподователя*", reply_markup=markup)
-        elif message.text == 'Студент':
+            bot.send_message(message.message.chat.id, "*Интерфейс для преподователя*", reply_markup=markup)
+            bot.answer_callback_query(message.id)
+        elif message.data == 's':
 
-            markup = types.InlineKeyboardMarkup(row_width=2)
-            item1 = types.InlineKeyboardButton("Мои тесты", callback_data='test_data')
-            item2 = types.InlineKeyboardButton("Решить тест", callback_data='new_test')
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            item1 = types.KeyboardButton("Мои тесты")
+            item2 = types.KeyboardButton("Решить тест")
 
             markup.add(item1, item2)
 
-            bot.send_message(message.chat.id, "*Интерфейс для студента*", reply_markup=markup)
+            bot.send_message(message.message.chat.id, "*Интерфейс для студента*", reply_markup=markup)
+            bot.answer_callback_query(message.id)
         else:
-            bot.send_message(message.chat.id, "Попробуйте еще раз")
+            bot.send_message(message.message.chat.id, "Попробуйте еще раз")
 
 
-@bot.callback_query_handler(func=lambda call: True)
+@bot.message_handler(content_types=['text'])
 def callback_inline(call):
     try:
-        if call.message:
-            if call.data == 'test_data':
-                bot.send_message(call.message.chat.id, 'Здесь пройденные тесты студента')
-            elif call.data == 'new_test':
-                bot.send_message(call.message.chat.id, 'Здесь интерфейс для прохождения теста по id')
-            elif call.data == 'test_teach':
-                bot.send_message(call.message.chat.id, 'Здесь тесты созданные преподавателем')
-            elif call.data == 'create_test':
-                bot.send_message(call.message.chat.id, 'Здесь интерфейс для создания теста')
-            elif call.data == 'results':
-                bot.send_message(call.message.chat.id, 'Текущие результаты тестов')
-
+        if call.chat.type == 'private':
+            if call.text == "Мои тесты":
+                bot.send_message(call.chat.id, 'Здесь пройденные тесты студента')
+            elif call.text == "Решить тест":
+                bot.send_message(call.chat.id, 'Здесь интерфейс для прохождения теста по id')
+            elif call.text == 'Текущие тесты':
+                bot.send_message(call.chat.id, 'Здесь тесты созданные преподавателем')
+            elif call.text == 'Создать тест':
+                bot.send_message(call.chat.id, 'Здесь интерфейс для создания теста')
+            elif call.text == "Выгрузить результаты":
+                bot.send_message(call.chat.id, 'Текущие результаты тестов')
             # remove inline buttons
             #if call.data == 'test_data' or call.data == 'new_test':
             #    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Студент",
