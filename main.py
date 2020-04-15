@@ -1,10 +1,12 @@
 import telebot
+from google_drive_downloader import GoogleDriveDownloader as gdd
 import config
 
 from telebot import types
+from TexSoup import TexSoup
 
 bot = telebot.TeleBot(config.TOKEN)
-
+flag_file = False
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
@@ -17,7 +19,8 @@ def welcome(message):
     student = types.InlineKeyboardButton("Студент", callback_data='s')
     markup.add(teacher, student)
 
-    bot.send_message(message.chat.id, "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>!\nБот созданный для проверки домашних заданий".format(message.from_user, bot.get_me()),
+    bot.send_message(message.chat.id,
+                     "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>!\nБот созданный для проверки домашних заданий".format(message.from_user, bot.get_me()),
                      parse_mode='html', reply_markup=markup)
 
 
@@ -62,9 +65,11 @@ def callback_inline(call):
             elif call.text == "Решить тест":
                 bot.send_message(call.chat.id, 'Здесь интерфейс для прохождения теста по id')
             elif call.text == 'Текущие тесты':
-                bot.send_message(call.chat.id, 'Здесь тесты созданные преподавателем')
+                id_ex = bot.send_message(call.chat.id, 'Введите имя теста')
+                bot.register_next_step_handler(id_ex, show_exams)
             elif call.text == 'Создать тест':
-                bot.send_message(call.chat.id, 'Здесь интерфейс для создания теста')
+                id_exam = bot.send_message(call.chat.id, 'Пожалуйста придумайте уникальный идентификатор для экзамена')
+                bot.register_next_step_handler(id_exam, create_exam)
             elif call.text == "Выгрузить результаты":
                 bot.send_message(call.chat.id, 'Текущие результаты тестов')
             # remove inline buttons
@@ -81,6 +86,80 @@ def callback_inline(call):
 
     except Exception as e:
         print(repr(e))
+
+
+class Task:
+    def __init__(self, soup):
+        self.question = soup.question
+        self.answerlist = list(soup.question.answerlist.find_all('item'))
+        self.solution = soup.solution
+        self.exname = soup.exname
+        self.extype = soup.extype
+        self.exsolution = soup.exsolution
+        self.exshuffle = soup.exshuffle
+
+
+class Exam:
+    def __init__(self, data):
+        self.author = data.from_user.username
+        self.id_exam = data.text
+        self.participants = None
+        self.task_list = []
+
+exam = None
+
+def create_exam(id_exam):
+    global exam
+    print(id_exam)
+    exam = Exam(id_exam)
+    participants = bot.send_message(id_exam.chat.id, 'Перечислите ники в телеграмме у участников')
+    exam.participants = list(participants.text.split(','))
+    bot.register_next_step_handler(id_exam, create_ex_2)
+
+
+def create_ex_2(id_exam):
+    global flag_file
+    resp = bot.send_message(id_exam.chat.id, 'Загрузите пожалуйста необходимое число вопросов в latex формате')
+    flag_file = True
+    bot.register_next_step_handler(resp, is_continue)
+
+
+def is_continue(resp):
+    #global exam
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    item1 = types.InlineKeyboardButton("Сохранить экзамен", callback_data="save")
+    item2 = types.InlineKeyboardButton("Изменить экзамен", callback_data="change")
+    markup.add(item1, item2)
+    bot.send_message(resp.chat.id,
+                     "Хотите ли вы сохранить экзамен или что-то изменить? Если хотите еще загрузить файл, просто продолжайте загружать",
+                     reply_markup=markup)
+
+
+@bot.message_handler(func=lambda message: flag_file, content_types=['document'])
+def create_task(file):
+    #global exam
+    if file and file.document:
+        raw = file.document.file_id
+        file_info = bot.get_file(raw)
+        downloaded_file = bot.download_file(file_info.file_path)
+        with open(raw+".tex", 'wb') as new_file:
+            new_file.write(downloaded_file)
+        task = Task(TexSoup(open(raw+".tex").read()))
+        #markup = types.InlineKeyboardMarkup(row_width=3)
+        #for i in range(len(task.answerlist)):
+        #    item = types.InlineKeyboardButton(str(task.answerlist[i])[6:], callback_data=str(i))
+        #    markup.add(item)
+        #bot.send_message(file.chat.id, task.question, reply_markup=markup)
+        exam.task_list.append(task)
+        print(exam.task_list)
+
+def show_exams(id_ex):
+    out = []
+    print(exam.task_list)
+    for i in exam.task_list:
+        out.append(i.question)
+    print(*out)
+    bot.send_message(id_ex.chat.id, len(out))
 
 # RUN
 
