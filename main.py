@@ -1,6 +1,6 @@
 import telebot
-from google_drive_downloader import GoogleDriveDownloader as gdd
 import config
+
 
 from telebot import types
 from TexSoup import TexSoup
@@ -112,7 +112,7 @@ def create_exam(id_exam):
     global exam
     print(id_exam)
     exam = Exam(id_exam)
-    participants = bot.send_message(id_exam.chat.id, 'Перечислите ники в телеграмме у участников')
+    participants = bot.send_message(id_exam.chat.id, 'Придумайте пароль для экзамена')
     exam.participants = list(participants.text.split(','))
     bot.register_next_step_handler(id_exam, create_ex_2)
 
@@ -145,13 +145,15 @@ def create_task(file):
         with open(raw+".tex", 'wb') as new_file:
             new_file.write(downloaded_file)
         task = Task(TexSoup(open(raw+".tex").read()))
-        #markup = types.InlineKeyboardMarkup(row_width=3)
-        #for i in range(len(task.answerlist)):
-        #    item = types.InlineKeyboardButton(str(task.answerlist[i])[6:], callback_data=str(i))
-        #    markup.add(item)
-        #bot.send_message(file.chat.id, task.question, reply_markup=markup)
+        markup = types.InlineKeyboardMarkup(row_width=3)
+        for i in range(len(task.answerlist)):
+            item = types.InlineKeyboardButton(str(task.answerlist[i])[6:], callback_data=str(i))
+            markup.add(item)
+        bot.send_message(file.chat.id, task.question, reply_markup=markup)
         exam.task_list.append(task)
         print(exam.task_list)
+
+
 
 def show_exams(id_ex):
     out = []
