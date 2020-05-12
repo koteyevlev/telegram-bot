@@ -2,12 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1193e3c1-baa9-438d-98f5-6ff299aec3aa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.handler-saves/step.save" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.handler-saves/step.save" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEdV65wlLufa2GazJ3TRFi_SI9xwABHwAC5gcAAvLU0EnFvHdwktK3ShkE.tex" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEfV65wuSbCL2yffhNQOxbJLqkQkZPAALoBwAC8tTQSWWM9VJwc5AVGQQ.tex" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEiF654AZpEPZJhZQLytKKMov_0V8RAALtBwAC8tTQSU13-S4rzEnwGQQ.tex" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIElF654I9vZE-FWwGs7-ZNalqxFNVbAALuBwAC8tTQScpG67ybpSlKGQQ.tex" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEoF654Nic-7l28hd_sXQbcSNma0RSAALvBwAC8tTQSV8mV6JpjuphGQQ.tex" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEoV654NmiA7q6er69aTxbGRQ4skKvAALwBwAC8tTQSf_LlRK1L8eqGQQ.tex" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEol654NnAL5wi3vva8Uuh8EVDNW-tAALxBwAC8tTQSU4wvK4lvEUIGQQ.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BQACAgIAAxkBAAIC2V6XKp3-PHHPKSVmMZpluy-O8HGoAAKhBgACuIa4SO-HgSHCB0ZHGAQ.tex" beforeDir="false" afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEKF65umls54AbZqaruqyxlrW0jkPsAALYBwAC8tTQSe8b4R5G2sbPGQQ.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BQACAgIAAxkBAAIC6F6XKtkqnEWXsO9wruXmBTCTyuVOAAKnBgACuIa4SKc9LXCvBJjcGAQ.tex" beforeDir="false" afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEMl65uqNBbt1kUd9VRGU73U_G46hOAALaBwAC8tTQSduGn9Pk_6XAGQQ.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BQACAgIAAxkBAAIDYF6sBlbsdGwbTKM1IctQUjrDEEx9AAKJBgACp8BgSUwecmAUFSMEGQQ.tex" beforeDir="false" afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEP165usxY2PXqrYlog3QLzmKcxH9fAALcBwAC8tTQSfFhwWBxf2rZGQQ.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BQACAgIAAxkBAAIDYV6sBlasaU2W3rnWIQvONwNgTyGIAAKKBgACp8BgSTNKPt5HqeQPGQQ.tex" beforeDir="false" afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEUV65u6lwFFU7dAR9l3GCMG4WXkqgAALfBwAC8tTQSTgkJO2M1KNiGQQ.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BQACAgIAAxkBAAIDcV6sBrDVBXpR5BIS5GgD9aHxeb4UAAKOBgACp8BgSVOfgg8I6oeKGQQ.tex" beforeDir="false" afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEW165vSFGD7hxJKE16ScVY_NxRIIXAALhBwAC8tTQSfrKLaNFqcrTGQQ.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BQACAgIAAxkBAAIDf16sC1-AivObbD0bKjWz0r7tV6_TAAKTBgACp8BgSUy73Nmmkz0sGQQ.tex" beforeDir="false" afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEZV65v85vzqXgQq_wY77V7MfsnsVaAALkBwAC8tTQSXg5cMTRy83CGQQ.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BQACAgIAAxkBAAIDi16sC6QGVx9FQfZEemM6IP69KWEQAAKVBgACp8BgSW-ER6QjPfKuGQQ.tex" beforeDir="false" afterPath="$PROJECT_DIR$/BQACAgIAAxkBAAIEbV65wDwCK8_UplHva_drhfZepbFRAALlBwAC8tTQSXcKh5Hw-Vh0GQQ.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/college.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/pip-selfcheck.json" beforeDir="false" afterPath="$PROJECT_DIR$/venv/pip-selfcheck.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,52 +48,53 @@
           <entry key="Procfile" value="1" />
           <entry key="data" value="2" />
           <entry key="py" value="8" />
-          <entry key="tex" value="1" />
+          <entry key="tex" value="2" />
           <entry key="txt" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="PLAIN_TEXT" value="5" />
+          <entry key="PLAIN_TEXT" value="6" />
           <entry key="Python" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Procfile" value="23" />
-          <entry key="py" value="5192" />
+          <entry key="py" value="5920" />
           <entry key="txt" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="28" />
-          <entry key="Python" value="5192" />
+          <entry key="Python" value="5920" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="90" selection-start-line="90" selection-end-line="98" selection-end-column="39" />
+            <state relative-caret-position="217">
+              <caret line="62" column="20" selection-start-line="62" selection-start-column="20" selection-end-line="62" selection-end-column="20" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
-                <marker date="1588901887442" expanded="true" signature="203:810" ph="..." />
-                <marker date="1588901887442" expanded="true" signature="4349:5474" ph="..." />
+                <marker date="1589240105884" expanded="true" signature="285:892" ph="..." />
+                <marker date="1589240105884" expanded="true" signature="4957:5769" ph="..." />
+                <marker date="1589240105884" expanded="true" signature="5686:5688" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="29" column="29" lean-forward="true" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
+            <state>
+              <caret selection-end-column="78" />
               <folding>
                 <element signature="e#0#78#0" expanded="true" />
               </folding>
@@ -89,10 +103,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BQACAgIAAxkBAAIDcV6sBrDVBXpR5BIS5GgD9aHxeb4UAAKOBgACp8BgSVOfgg8I6oeKGQQ.tex">
+        <entry file="file://$PROJECT_DIR$/BQACAgIAAxkBAAIB1F6W5o41S_8Bc6Ithm8-RTVZfIBSAAK0BQACuIa4SHNySwJWWRegGAQ.tex">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="40" selection-start-line="40" selection-end-line="40" />
+            <state relative-caret-position="383">
+              <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
             </state>
           </provider>
         </entry>
@@ -108,12 +122,11 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/requirements.txt">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/teacher.py">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="30" column="14" lean-forward="true" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -141,12 +154,12 @@
         <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/teacher.py" />
         <option value="$PROJECT_DIR$/venv/app.py" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/database.py" />
+        <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1382" />
@@ -207,7 +220,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.database">
+  <component name="RunManager" selected="Python.main">
     <configuration name="database" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="TelegramBot" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -256,8 +269,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.database" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.database" />
       </list>
     </recent_temporary>
   </component>
@@ -275,21 +288,22 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4911111" visible="true" weight="0.1904762" />
-      <window_info id="Structure" order="1" sideWeight="0.5088889" side_tool="true" visible="true" weight="0.1904762" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4904051" visible="true" weight="0.1904762" />
+      <window_info id="Structure" order="1" sideWeight="0.50959486" side_tool="true" visible="true" weight="0.1904762" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3289689" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.2111293" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49925596" visible="true" weight="0.23240589" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.26350245" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.26350245" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50074404" side_tool="true" weight="0.23240589" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -322,9 +336,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/venv/app.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -335,34 +346,49 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/teacher.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/BQACAgIAAxkBAAIDcV6sBrDVBXpR5BIS5GgD9aHxeb4UAAKOBgACp8BgSVOfgg8I6oeKGQQ.tex">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
+        <state relative-caret-position="396">
+          <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/teacher.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="90" selection-start-line="90" selection-end-line="98" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-            <marker date="1588901887442" expanded="true" signature="203:810" ph="..." />
-            <marker date="1588901887442" expanded="true" signature="4349:5474" ph="..." />
-          </folding>
+        <state relative-caret-position="391">
+          <caret line="30" column="14" lean-forward="true" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BQACAgIAAxkBAAIB1F6W5o41S_8Bc6Ithm8-RTVZfIBSAAK0BQACuIa4SHNySwJWWRegGAQ.tex">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="383">
+          <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/database.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="29" column="29" lean-forward="true" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
+        <state>
+          <caret selection-end-column="78" />
           <folding>
             <element signature="e#0#78#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="62" column="20" selection-start-line="62" selection-start-column="20" selection-end-line="62" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+            <marker date="1589240105884" expanded="true" signature="285:892" ph="..." />
+            <marker date="1589240105884" expanded="true" signature="4957:5769" ph="..." />
+            <marker date="1589240105884" expanded="true" signature="5686:5688" ph="..." />
           </folding>
         </state>
       </provider>

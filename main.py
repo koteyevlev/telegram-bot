@@ -4,6 +4,8 @@ import config
 
 from telebot import types
 from TexSoup import TexSoup
+from database import engine, Task
+from sqlalchemy.orm import mapper, sessionmaker
 
 bot = telebot.TeleBot(config.TOKEN)
 flag_file = False
@@ -56,6 +58,25 @@ def user_parser(message):
             bot.send_message(message.message.chat.id, "Попробуйте еще раз")
 
 
+@bot.message_handler(func=lambda message: flag_file, content_types=['text'])
+def save_ex(mes):
+    global flag_file
+    if mes.text == "Сохранить экзамен":
+        flag_file = False
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Текущие тесты")
+        item2 = types.KeyboardButton("Создать тест")
+        item3 = types.KeyboardButton("Выгрузить результаты")
+
+        markup.add(item1, item2)
+        markup.add(item3)
+        bot.send_message(mes.chat.id, "Экзамен успешно сохранен", reply_markup=markup)
+    elif mes.text == "Изменить экзамен":
+        bot.send_message(mes.chat.id, "Заново загрузите все файлы")
+        # здесь я пропишу удаление последнего экзамена созданного юзером
+        # В идеале конечно чтобы он мог один или несколько файлов удалять, но сделать это без диких костылей я не знаю как
+
+
 @bot.message_handler(content_types=['text'])
 def callback_inline(call):
     try:
@@ -88,16 +109,6 @@ def callback_inline(call):
         print(repr(e))
 
 
-class Task:
-    def __init__(self, soup):
-        self.question = soup.question
-        self.answerlist = list(soup.question.answerlist.find_all('item'))
-        self.solution = soup.solution
-        self.exname = soup.exname
-        self.extype = soup.extype
-        self.exsolution = soup.exsolution
-        self.exshuffle = soup.exshuffle
-
 
 class Exam:
     def __init__(self, data):
@@ -110,48 +121,45 @@ exam = None
 
 def create_exam(id_exam):
     global exam
-    print(id_exam)
     exam = Exam(id_exam)
-    participants = bot.send_message(id_exam.chat.id, 'Придумайте пароль для экзамена')
-    exam.participants = list(participants.text.split(','))
+    password = bot.send_message(id_exam.chat.id, 'Придумайте пароль для экзамена')
+    print(password)
     bot.register_next_step_handler(id_exam, create_ex_2)
 
 
 def create_ex_2(id_exam):
     global flag_file
-    resp = bot.send_message(id_exam.chat.id, 'Загрузите пожалуйста необходимое число вопросов в latex формате')
     flag_file = True
-    bot.register_next_step_handler(resp, is_continue)
-
-
-def is_continue(resp):
-    #global exam
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    item1 = types.InlineKeyboardButton("Сохранить экзамен", callback_data="save")
-    item2 = types.InlineKeyboardButton("Изменить экзамен", callback_data="change")
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = types.KeyboardButton("Сохранить экзамен")
+    item2 = types.KeyboardButton("Изменить экзамен")
     markup.add(item1, item2)
-    bot.send_message(resp.chat.id,
-                     "Хотите ли вы сохранить экзамен или что-то изменить? Если хотите еще загрузить файл, просто продолжайте загружать",
-                     reply_markup=markup)
+    resp = bot.send_message(id_exam.chat.id, 'Загрузите пожалуйста необходимое число вопросов в latex формате',
+                            reply_markup=markup)
+    #bot.register_next_step_handler(id_exam, is_continue)
+
+
 
 
 @bot.message_handler(func=lambda message: flag_file, content_types=['document'])
 def create_task(file):
     #global exam
-    if file and file.document:
+    print("fd")
+    if file.document:
         raw = file.document.file_id
         file_info = bot.get_file(raw)
         downloaded_file = bot.download_file(file_info.file_path)
         with open(raw+".tex", 'wb') as new_file:
             new_file.write(downloaded_file)
         task = Task(TexSoup(open(raw+".tex").read()))
-        markup = types.InlineKeyboardMarkup(row_width=3)
-        for i in range(len(task.answerlist)):
-            item = types.InlineKeyboardButton(str(task.answerlist[i])[6:], callback_data=str(i))
-            markup.add(item)
-        bot.send_message(file.chat.id, task.question, reply_markup=markup)
-        exam.task_list.append(task)
-        print(exam.task_list)
+        bot.send_message(file.chat.id, task.question)
+        #exam.task_list.append(task)
+        #print(exam.task_list)
+        Session = sessionmaker(bind=engine)
+        Session = Session()
+
+        Session.add(task)
+        Session.commit()
 
 
 

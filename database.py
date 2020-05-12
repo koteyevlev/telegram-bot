@@ -14,7 +14,6 @@ tasks = Table(
    Column('question', String(1000)),
    Column('answerlist', String(1000)),
    Column('solution', String(1000)),
-   Column('solutionlist', String(1000)),
    Column('exname', String(1000)),
    Column('extype', String(1000)),
    Column('exsolution', String(1000)),
@@ -24,22 +23,19 @@ tasks = Table(
 
 class Task:
    def __init__(self, soup):
-      self.question = "s" #soup.question
-      self.answerlist = "r" #soup.question.answerlist.find_all('item')
-      self.solution = "e" #soup.solution
-      self.solutionlist = "e"
-      self.exname = "e" #soup.exname
-      self.extype = "e" #soup.extype
-      self.exsolution = "e" #soup.exsolution
-      self.exshuffle = "e" #soup.exshuffle
+      self.question = str(soup.question[0])
+      self.answerlist = str(list(soup.question.answerlist.find_all('item')))
+      self.solution = str(soup.solution[0])
+      self.exname = str(soup.exname[0])
+      self.extype = str(soup.extype[0])
+      self.exsolution = str(soup.exsolution[0])
+      self.exshuffle = str(soup.exshuffle[0])
 
 mapper(Task, tasks)
 meta.create_all(engine)
 
-Session = sessionmaker(bind=engine)
-Session = Session()
+#Session = sessionmaker(bind=engine)
+#Session = Session()
 
-soup = dict()
-
-Session.add(Task(soup))
-Session.commit()
+#Session.add(Task(soup))
+#Session.commit()
