@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import telebot
 import config
-
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
 
 from telebot import types
 from TexSoup import TexSoup
-from database import engine, Task
+from database import engine, Task, Exam, meta
 from sqlalchemy.orm import mapper, sessionmaker
 
 bot = telebot.TeleBot(config.TOKEN)
@@ -29,9 +30,6 @@ def welcome(message):
 @bot.callback_query_handler(func=lambda call: call.data == 'p' or call.data == 's')
 def user_parser(message):
     if True:
-        bot.edit_message_text(chat_id=message.message.chat.id, message_id=message.message.message_id,
-                              text="Выберите необходимое действие",
-                              reply_markup=None)
         if message.data == 'p':
 
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -42,7 +40,7 @@ def user_parser(message):
             markup.add(item1, item2)
             markup.add(item3)
 
-            bot.send_message(message.message.chat.id, "*Интерфейс для преподователя*", reply_markup=markup)
+            bot.send_message(message.message.chat.id, "Выберите необходимое действие", reply_markup=markup)
             bot.answer_callback_query(message.id)
         elif message.data == 's':
 
@@ -52,7 +50,7 @@ def user_parser(message):
 
             markup.add(item1, item2)
 
-            bot.send_message(message.message.chat.id, "*Интерфейс для студента*", reply_markup=markup)
+            bot.send_message(message.message.chat.id, "Выберите необходимое действие", reply_markup=markup)
             bot.answer_callback_query(message.id)
         else:
             bot.send_message(message.message.chat.id, "Попробуйте еще раз")
@@ -72,22 +70,39 @@ def save_ex(mes):
         markup.add(item3)
         bot.send_message(mes.chat.id, "Экзамен успешно сохранен", reply_markup=markup)
     elif mes.text == "Изменить экзамен":
+        Session = sessionmaker(bind=engine)
+        Session = Session()
+        last_exam = Session.query(Exam).filter_by(author=mes.from_user.username).all()[-1]
+        Session.query(Task).filter_by(exam_id=last_exam.exam_id).delete(synchronize_session=False)
+        Session.query(Exam).filter_by(exam_id=last_exam.exam_id).delete(synchronize_session=False)
+        Session.commit()
         bot.send_message(mes.chat.id, "Заново загрузите все файлы")
+
         # здесь я пропишу удаление последнего экзамена созданного юзером
-        # В идеале конечно чтобы он мог один или несколько файлов удалять, но сделать это без диких костылей я не знаю как
+        # В идеале конечно чтобы он мог один или несколько файлов удалять
 
 
 @bot.message_handler(content_types=['text'])
 def callback_inline(call):
     try:
+        Session = sessionmaker(bind=engine)
+        Session = Session()
         if call.chat.type == 'private':
             if call.text == "Мои тесты":
                 bot.send_message(call.chat.id, 'Здесь пройденные тесты студента')
             elif call.text == "Решить тест":
-                bot.send_message(call.chat.id, 'Здесь интерфейс для прохождения теста по id')
+                id_ex = bot.send_message(call.chat.id, 'Введите идентификатор экзамена')
+                bot.register_next_step_handler(id_ex, sol_ex1)
             elif call.text == 'Текущие тесты':
-                id_ex = bot.send_message(call.chat.id, 'Введите имя теста')
-                bot.register_next_step_handler(id_ex, show_exams)
+                exams = Session.query(Exam).filter_by(author=call.from_user.username).all()
+                if len(exams) == 0:
+                    bot.send_message(call.chat.id, 'У вас нет созданных тестов')
+                else:
+                    var = ''
+                    for ex in exams:
+                        var += ex.exam_id + '\n'
+                    id_ex = bot.send_message(call.chat.id, 'Введите имя теста\n\nВозможные варианты:\n' + var)
+                    bot.register_next_step_handler(id_ex, show_exams)
             elif call.text == 'Создать тест':
                 id_exam = bot.send_message(call.chat.id, 'Пожалуйста придумайте уникальный идентификатор для экзамена')
                 bot.register_next_step_handler(id_exam, create_exam)
@@ -109,54 +124,58 @@ def callback_inline(call):
         print(repr(e))
 
 
-
-class Exam:
-    def __init__(self, data):
-        self.author = data.from_user.username
-        self.id_exam = data.text
-        self.participants = None
-        self.task_list = []
-
-exam = None
+usertmp = dict()
 
 def create_exam(id_exam):
-    global exam
     exam = Exam(id_exam)
-    password = bot.send_message(id_exam.chat.id, 'Придумайте пароль для экзамена')
-    print(password)
-    bot.register_next_step_handler(id_exam, create_ex_2)
+    exam.task_num = 0
+    markup = types.ForceReply(selective=False)
+    password = bot.send_message(id_exam.chat.id, 'Придумайте пароль для экзамена', reply_markup=markup)
+    usertmp[id_exam.chat.id] = exam
+    bot.register_next_step_handler(password, create_ex_2)
 
+#flag_file = dict()
 
-def create_ex_2(id_exam):
+def create_ex_2(password):
+    print("SP", password.text)
+    exam = usertmp[password.chat.id]
+    usertmp[password.chat.id] = None
+    exam.password = password.text
+    Session = sessionmaker(bind=engine)
+    Session = Session()
+
+    Session.add(exam)
+    Session.commit()
+    print(password.text)
+
     global flag_file
     flag_file = True
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Сохранить экзамен")
     item2 = types.KeyboardButton("Изменить экзамен")
     markup.add(item1, item2)
-    resp = bot.send_message(id_exam.chat.id, 'Загрузите пожалуйста необходимое число вопросов в latex формате',
-                            reply_markup=markup)
-    #bot.register_next_step_handler(id_exam, is_continue)
-
+    bot.send_message(password.chat.id, 'Загрузите пожалуйста необходимое число вопросов в latex формате', reply_markup=markup)
+    #bot.register_next_step_handler(resp, )
 
 
 
 @bot.message_handler(func=lambda message: flag_file, content_types=['document'])
 def create_task(file):
-    #global exam
-    print("fd")
     if file.document:
+        Session = sessionmaker(bind=engine)
+        Session = Session()
         raw = file.document.file_id
         file_info = bot.get_file(raw)
         downloaded_file = bot.download_file(file_info.file_path)
         with open(raw+".tex", 'wb') as new_file:
             new_file.write(downloaded_file)
-        task = Task(TexSoup(open(raw+".tex").read()))
+        last_exam = Session.query(Exam).filter_by(author=file.from_user.username).all()[-1]
+        last_exam.tasks_num += 1
+        task = Task(TexSoup(open(raw+".tex").read()), last_exam.exam_id)
         bot.send_message(file.chat.id, task.question)
         #exam.task_list.append(task)
         #print(exam.task_list)
-        Session = sessionmaker(bind=engine)
-        Session = Session()
+
 
         Session.add(task)
         Session.commit()
@@ -164,12 +183,94 @@ def create_task(file):
 
 
 def show_exams(id_ex):
-    out = []
-    print(exam.task_list)
-    for i in exam.task_list:
-        out.append(i.question)
-    print(*out)
-    bot.send_message(id_ex.chat.id, len(out))
+    Session = sessionmaker(bind=engine)
+    Session = Session()
+    try:
+        exam = Session.query(Exam).filter_by(author=id_ex.from_user.username, exam_id=id_ex.text).all()[0]
+        out = 'Название экзамена - ' + str(exam.exam_id)
+        out += '\nПароль экзамена - ' + exam.password
+        out += '\nВсего заданий - ' + str(exam.tasks_num)
+        out += '\nВсего прошло тест - ' + str(exam.number_of_res)
+        out += '\n\nДля более подробных результатов нажмите выгрузить результаты'
+        bot.send_message(id_ex.chat.id, out)
+    except:
+        bot.send_message(id_ex.chat.id, "Нет такого экзамена")
+
+
+
+
+
+def sol_ex1(id_ex):
+    Session = sessionmaker(bind=engine)
+    Session = Session()
+    try:
+        print(id_ex.text)
+        _ = Session.query(Exam).filter_by(exam_id=id_ex.text).all()[0]
+        password = bot.send_message(id_ex.chat.id, "Введите пароль от экзамена")
+        usertmp[id_ex.chat.id] = id_ex.text
+        bot.register_next_step_handler(password, sol_ex2)
+    except:
+        bot.send_message(id_ex.chat.id, "Нет такого экзамена")
+
+
+def sol_ex2(password):
+    Session = sessionmaker(bind=engine)
+    Session = Session()
+    ex = Session.query(Exam).filter_by(exam_id=usertmp[password.chat.id]).all()[0]
+    if ex.password != password.text: # или уже решал экзамен, или уже закрыт экзамен
+        bot.send_message(password.chat.id, "Пароль не верный")
+    else:
+        check = bot.send_message(password.chat.id, "На экзамен дается одна попытка\nКак только будете готовы, напишите \"+\"")
+        bot.register_next_step_handler(check, sol_ex3)
+
+
+tmp_task_lst = dict()
+user_question_num = dict()
+tmp_res = dict()
+
+
+def sol_ex3(check):
+    if check.text != '+':
+        bot.send_message(check.chat.id, "Выберите дальнейшее действие")
+    else:
+        Session = sessionmaker(bind=engine)
+        Session = Session()
+        ex = Session.query(Exam).filter_by(exam_id=usertmp[check.chat.id]).all()[0]
+        tasks = list(Session.query(Task).filter_by(exam_id=usertmp[check.chat.id]).all())
+        tmp_task_lst[check.from_user.username] = tasks
+        user_question_num[check.from_user.username] = 0
+        try:
+            task = tasks[0]
+            markup = types.InlineKeyboardMarkup(row_width=2)
+            item_list = list(map(str, task.answerlist.split('\item')))
+            for choos in range(len(item_list)):
+                item = types.InlineKeyboardButton(item_list[choos], callback_data=str(choos))
+                markup.add(item)
+            ans = bot.send_message(check.chat.id, task.question, reply_markup=markup)
+            tmp_res[ans.from_user.username] = dict()
+            bot.register_next_step_handler(ans, sol_ex4)
+        except:
+            bot.send_message(check.chat.id, "Вопросов нет")
+
+
+
+def sol_ex4(ans):
+    tmp_res[ans.from_user.username][user_question_num[ans.from_user.username]] = ans.text
+    user_question_num[ans.from_user.username] += 1
+    task = tmp_task_lst[ans.from_user.username][user_question_num[ans.from_user.username]]
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    item_list = list(map(str, task.answerlist.split('\item')))
+    for choos in range(len(item_list)):
+        item = types.InlineKeyboardButton(item_list[choos], callback_data=str(choos))
+        markup.add(item)
+    ans = bot.send_message(ans.chat.id, task.question, reply_markup=markup)
+
+
+def sol_ex5(ans):
+    print("fu")
+
+
+
 
 # RUN
 
