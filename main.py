@@ -27,6 +27,12 @@ def welcome(message):
                      parse_mode='html', reply_markup=markup)
 
 
+@bot.callback_query_handler(func=lambda call: str(call.data).isdigit())
+def answer_parser(answer):
+    bot.send_message(answer.message.chat.id, answer.data)
+    bot.answer_callback_query(answer.id)
+
+
 @bot.callback_query_handler(func=lambda call: call.data == 'p' or call.data == 's')
 def user_parser(message):
     if True:
@@ -248,6 +254,7 @@ def sol_ex3(check):
                 markup.add(item)
             ans = bot.send_message(check.chat.id, task.question, reply_markup=markup)
             tmp_res[ans.from_user.username] = dict()
+            print("sdgerhdf")
             bot.register_next_step_handler(ans, sol_ex4)
         except:
             bot.send_message(check.chat.id, "Вопросов нет")
@@ -255,6 +262,7 @@ def sol_ex3(check):
 
 
 def sol_ex4(ans):
+    print("fdkjgh")
     tmp_res[ans.from_user.username][user_question_num[ans.from_user.username]] = ans.text
     user_question_num[ans.from_user.username] += 1
     task = tmp_task_lst[ans.from_user.username][user_question_num[ans.from_user.username]]
