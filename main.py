@@ -290,10 +290,11 @@ def sol_ex5(ans):
     for i in range(user_question_num[ans.from_user.username]):
         answer = tmp_res[ans.from_user.username][i]
         username = ans.from_user.username
-        exam_id =
-        correct_answer =
-        ans = Answers(answer, username, exam_id, correct_answer)
-        Session.add(ans)
+        exam_id = tmp_task_lst[ans.from_user.username][i].exam_id
+        correct_answer = tmp_task_lst[ans.from_user.username][i].exsolution.find('1')
+        print(correct_answer)
+        tmp_ans = Answers(exam_id, username, answer, correct_answer)
+        Session.add(tmp_ans)
 
     Session.commit()
 
