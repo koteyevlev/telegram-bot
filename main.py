@@ -196,6 +196,7 @@ def create_task(file):
             new_file.write(downloaded_file)
         last_exam = Session.query(Exam).filter_by(author=file.from_user.username).all()[-1]
         last_exam.tasks_num += 1
+        Session.commit()
         task = Task(TexSoup(open(raw+".tex").read()), last_exam.exam_id)
         bot.send_message(file.chat.id, task.question)
         #exam.task_list.append(task)
@@ -229,12 +230,12 @@ def show_results(id_ex):
         var = 'Название экзамена - ' + str(id_ex.text)
         all_correct_answers = 0
         for user in grades:
-            var += f'{user.username} - {user.number_of_correct_answers}/{user.total_answers} \n'
+            var += f'\n{user.username} - {user.number_of_correct_answers}/{user.total_answers}'
             all_correct_answers += user.number_of_correct_answers
 
 
-        var += '\nВсего прошло тест - ' + str(len(grades))
-        var += '\nСреднее количество правильных ответов - ' + str(all_correct_answers / len(grades))
+        var += '\n\nВсего прошло тест - ' + str(len(grades))
+        var += '\nСреднее количество правильных ответов - ' + str(round(all_correct_answers / len(grades), 2))
         bot.send_message(id_ex.chat.id, var)
     except:
         bot.send_message(id_ex.chat.id, "Нет такого экзамена")
@@ -317,6 +318,13 @@ def sol_ex4(ans):
 def sol_ex5(ans):
     Session = sessionmaker(bind=engine)
     Session = Session()
+
+    exam_id = tmp_task_lst[ans.from_user.username][0].exam_id
+    last_exam = Session.query(Exam).filter_by(exam_id=exam_id).all()[0]
+    print("khgjh", last_exam.number_of_res, last_exam)
+    last_exam.number_of_res += 1
+    Session.commit()
+
     total_answers = user_question_num[ans.from_user.username]
     number_of_correct_answers = 0
     for i in range(total_answers):
