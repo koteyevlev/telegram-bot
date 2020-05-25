@@ -99,14 +99,13 @@ def callback_inline(call):
         Session = Session()
         if call.chat.type == 'private':
             if call.text == "Мои тесты":
-                user_grades = Session.query(Grades).filter_by(author=call.from_user.username).all()
+                user_grades = Session.query(Grades).filter_by(username=call.from_user.username).all()
                 if len(user_grades) == 0:
                     bot.send_message(call.chat.id, 'У вас нет пройденных тестов')
-                elif:
-                    var = ''
+                else:
+                    var = 'Список пройденных экзаменов:\n'
                     for ex in user_grades:
-                        var += f'Номер экзамена {ex.exam_id}, количество ваших правильных ответов {ex.number_of_correct_answers},
-                        общее количество вопросов {ex.total_answers} \n'
+                        var += f'{ex.exam_id} - {ex.number_of_correct_answers}/{ex.total_answers} \n'
                     bot.send_message(call.chat.id, var)   
             elif call.text == "Решить тест":
                 id_ex = bot.send_message(call.chat.id, 'Введите идентификатор экзамена')
