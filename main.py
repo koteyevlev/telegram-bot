@@ -124,7 +124,15 @@ def callback_inline(call):
                 id_exam = bot.send_message(call.chat.id, 'Пожалуйста придумайте уникальный идентификатор для экзамена')
                 bot.register_next_step_handler(id_exam, create_exam)
             elif call.text == "Выгрузить результаты":
-                bot.send_message(call.chat.id, 'Текущие результаты тестов')
+                exams = Session.query(Exam).filter_by(author=call.from_user.username).all()
+                if len(exams) == 0:
+                    bot.send_message(call.chat.id, 'У вас нет созданных тестов')
+                else:
+                    var = ''
+                    for ex in exams:
+                        var += ex.exam_id + '\n'
+                    id_ex = bot.send_message(call.chat.id, 'Введите имя теста\n\nВозможные варианты:\n' + var)
+                    bot.register_next_step_handler(id_ex, show_results)
             # remove inline buttons
             #if call.data == 'test_data' or call.data == 'new_test':
             #    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Студент",
@@ -213,7 +221,23 @@ def show_exams(id_ex):
     except:
         bot.send_message(id_ex.chat.id, "Нет такого экзамена")
 
+def show_results(id_ex):
+    Session = sessionmaker(bind=engine)
+    Session = Session()
+    try:
+        grades = Session.query(Grades).filter_by(exam_id=id_ex.text).all()
+        var = 'Название экзамена - ' + str(id_ex.text)
+        all_correct_answers = 0
+        for user in grades:
+            var += f'{user.username} - {user.number_of_correct_answers}/{user.total_answers} \n'
+            all_correct_answers += user.number_of_correct_answers
 
+
+        var += '\nВсего прошло тест - ' + str(len(grades))
+        var += '\nСреднее количество правильных ответов - ' + str(all_correct_answers / len(grades))
+        bot.send_message(id_ex.chat.id, var)
+    except:
+        bot.send_message(id_ex.chat.id, "Нет такого экзамена")
 
 
 
