@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
 
 from telebot import types
 from TexSoup import TexSoup
-from database import engine, Task, Exam, meta, Answers
+from database import engine, Task, Exam, meta, Answers, Grades
 from sqlalchemy.orm import mapper, sessionmaker
 
 bot = telebot.TeleBot(config.TOKEN)
@@ -286,16 +286,22 @@ def sol_ex4(ans):
 def sol_ex5(ans):
     Session = sessionmaker(bind=engine)
     Session = Session()
-
-    for i in range(user_question_num[ans.from_user.username]):
-        answer = tmp_res[ans.from_user.username][i]
+    total_answers = user_question_num[ans.from_user.username]
+    number_of_correct_answers = 0
+    for i in range(total_answers):
+        user_answer = tmp_res[ans.from_user.username][i]
         username = ans.from_user.username
         exam_id = tmp_task_lst[ans.from_user.username][i].exam_id
         correct_answer = tmp_task_lst[ans.from_user.username][i].exsolution.find('1')
         print(correct_answer)
-        tmp_ans = Answers(exam_id, username, answer, correct_answer)
+        tmp_ans = Answers(exam_id, username, user_answer, correct_answer)
         Session.add(tmp_ans)
+        if correct_answer == user_answer:
+            number_of_correct_answers += 1
 
+    grad = Grades(exam_id, username, number_of_correct_answers, total_answers)
+    Session.add(grad)
+    
     Session.commit()
 
 
