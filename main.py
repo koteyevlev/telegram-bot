@@ -30,6 +30,8 @@ def welcome(message):
 @bot.callback_query_handler(func=lambda call: str(call.data).isdigit())
 def answer_parser(answer):
     bot.send_message(answer.message.chat.id, answer.data)
+    tmp_res[answer.from_user.username][user_question_num[answer.from_user.username]] = answer.data
+    print(answer)
     bot.answer_callback_query(answer.id)
 
 
@@ -248,12 +250,12 @@ def sol_ex3(check):
         try:
             task = tasks[0]
             markup = types.InlineKeyboardMarkup(row_width=2)
-            item_list = list(map(str, task.answerlist.split('\item')))
+            item_list = list(map(str, task.answerlist.split('\item')))[1:]
             for choos in range(len(item_list)):
-                item = types.InlineKeyboardButton(item_list[choos], callback_data=str(choos))
+                item = types.InlineKeyboardButton(item_list[choos][:-2], callback_data=str(choos))
                 markup.add(item)
             ans = bot.send_message(check.chat.id, task.question, reply_markup=markup)
-            tmp_res[ans.from_user.username] = dict()
+            tmp_res[check.from_user.username] = dict()
             print("sdgerhdf")
             bot.register_next_step_handler(ans, sol_ex4)
         except:
@@ -263,13 +265,13 @@ def sol_ex3(check):
 
 def sol_ex4(ans):
     print("fdkjgh")
-    tmp_res[ans.from_user.username][user_question_num[ans.from_user.username]] = ans.text
+    print(tmp_res)
     user_question_num[ans.from_user.username] += 1
     task = tmp_task_lst[ans.from_user.username][user_question_num[ans.from_user.username]]
     markup = types.InlineKeyboardMarkup(row_width=2)
-    item_list = list(map(str, task.answerlist.split('\item')))
+    item_list = list(map(str, task.answerlist.split('\item')))[1:]
     for choos in range(len(item_list)):
-        item = types.InlineKeyboardButton(item_list[choos], callback_data=str(choos))
+        item = types.InlineKeyboardButton(item_list[choos][:-2], callback_data=str(choos))
         markup.add(item)
     ans = bot.send_message(ans.chat.id, task.question, reply_markup=markup)
 
