@@ -8,19 +8,6 @@ print(conn.execute('show tables;'))
 
 meta = MetaData()
 
-
-meta_ex = Table(
-   'meta_exams', meta,
-   Column('id', Integer, primary_key=True, unique=True),
-   Column('exam_id', String(100), unique=True),
-   Column('author', String(100)),
-   Column('password', String(1000)),
-   Column('tasks_num', Integer),
-   Column("number_of_res", Integer),
-   Column("result_id", Integer, unique=True)
-)
-
-
 class Exam:
    def __init__(self, data):
       self.exam_id = data.text
@@ -29,8 +16,6 @@ class Exam:
       self.tasks_num = 0
       self.number_of_res = 0
       self.result_id = None
-
-
 
 class Task:
    def __init__(self, soup, exam_id=0):
@@ -43,6 +28,30 @@ class Task:
       self.exsolution = str(soup.exsolution[0])
       self.exshuffle = str(soup.exshuffle[0])
 
+class Answers:
+   def __init__(self, exam_id, username, answer, correct_answer):
+      self.exam_id = exam_id
+      self.username = username
+      self.answer = answer
+      self.correct_answer = correct_answer
+
+class Grades:
+   def __init__(self, exam_id, username, number_of_correct_answers, total_answers):
+      self.exam_id = exam_id
+      self.username = username
+      self.number_of_correct_answers = number_of_correct_answers
+      self.total_answers = total_answers
+      
+meta_ex = Table(
+   'meta_exams', meta,
+   Column('id', Integer, primary_key=True, unique=True),
+   Column('exam_id', String(100), unique=True),
+   Column('author', String(100)),
+   Column('password', String(1000)),
+   Column('tasks_num', Integer),
+   Column("number_of_res", Integer),
+   Column("result_id", Integer, unique=True)
+)
 
 tasks = Table(
    "tasks", meta,
@@ -57,9 +66,30 @@ tasks = Table(
    Column('exshuffle', Integer)
 )
 
+answers = Table(
+   "answers", meta,
+   Column('id', Integer, primary_key=True),
+   Column('exam_id', String(100)),
+   Column('username', String(100)),
+   Column('answer', Integer),
+   Column('correct_answer',  Integer)
+)
+
+grades = Table(
+   "grades", meta,
+   Column('id', Integer, primary_key=True),
+   Column('exam_id', String(100)),
+   Column('username', String(100)),
+   Column('number_of_correct_answers', Integer),
+   Column('total_answers', Integer)
+)
+
 mapper(Task, tasks)
 mapper(Exam, meta_ex)
+mapper(Answers, answers)
+mapper(Grades, grades)
 meta.create_all(engine)
+
 
 #Session = sessionmaker(bind=engine)
 #Session = Session()

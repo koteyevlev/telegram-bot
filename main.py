@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
 
 from telebot import types
 from TexSoup import TexSoup
-from database import engine, Task, Exam, meta
+from database import engine, Task, Exam, meta, Answers
 from sqlalchemy.orm import mapper, sessionmaker
 
 bot = telebot.TeleBot(config.TOKEN)
@@ -33,6 +33,8 @@ def answer_parser(answer):
     tmp_res[answer.from_user.username][user_question_num[answer.from_user.username]] = answer.data
     print(answer)
     bot.answer_callback_query(answer.id)
+    sol_ex4(answer)
+
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'p' or call.data == 's')
@@ -257,27 +259,43 @@ def sol_ex3(check):
             ans = bot.send_message(check.chat.id, task.question, reply_markup=markup)
             tmp_res[check.from_user.username] = dict()
             print("sdgerhdf")
-            bot.register_next_step_handler(ans, sol_ex4)
+            #bot.register_next_step_handler(ans, sol_ex4)
         except:
             bot.send_message(check.chat.id, "Вопросов нет")
 
 
 
 def sol_ex4(ans):
-    print("fdkjgh")
-    print(tmp_res)
-    user_question_num[ans.from_user.username] += 1
-    task = tmp_task_lst[ans.from_user.username][user_question_num[ans.from_user.username]]
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    item_list = list(map(str, task.answerlist.split('\item')))[1:]
-    for choos in range(len(item_list)):
-        item = types.InlineKeyboardButton(item_list[choos][:-2], callback_data=str(choos))
-        markup.add(item)
-    ans = bot.send_message(ans.chat.id, task.question, reply_markup=markup)
+    print(ans)
+    try:
+        print("fdkjgh")
+        print(tmp_res)
+        user_question_num[ans.from_user.username] += 1
+        task = tmp_task_lst[ans.from_user.username][user_question_num[ans.from_user.username]]
+        markup = types.InlineKeyboardMarkup(row_width=2)
+        item_list = list(map(str, task.answerlist.split('\item')))[1:]
+        for choos in range(len(item_list)):
+            item = types.InlineKeyboardButton(item_list[choos][:-2], callback_data=str(choos))
+            markup.add(item)
+        ans = bot.send_message(ans.message.chat.id, task.question, reply_markup=markup)
+    except:
+        bot.send_message(ans.message.chat.id, "Экзамен закончен")
+        sol_ex5(ans)
 
 
 def sol_ex5(ans):
-    print("fu")
+    Session = sessionmaker(bind=engine)
+    Session = Session()
+
+    for i in range(user_question_num[ans.from_user.username]):
+        answer = tmp_res[ans.from_user.username][i]
+        username = ans.from_user.username
+        exam_id =
+        correct_answer =
+        ans = Answers(answer, username, exam_id, correct_answer)
+        Session.add(ans)
+
+    Session.commit()
 
 
 
