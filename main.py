@@ -32,6 +32,8 @@ def answer_parser(answer):
     bot.send_message(answer.message.chat.id, answer.data)
     tmp_res[answer.from_user.username][user_question_num[answer.from_user.username]] = answer.data
     print(answer)
+    bot.edit_message_text(chat_id=answer.message.chat.id, message_id=answer.message.message_id, text="Вопрос засчитан",
+                          reply_markup=None)
     bot.answer_callback_query(answer.id)
     sol_ex4(answer)
 
