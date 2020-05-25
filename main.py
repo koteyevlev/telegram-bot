@@ -293,10 +293,10 @@ def sol_ex5(ans):
         username = ans.from_user.username
         exam_id = tmp_task_lst[ans.from_user.username][i].exam_id
         correct_answer = tmp_task_lst[ans.from_user.username][i].exsolution.find('1')
-        print(correct_answer)
+        print(correct_answer, user_answer, correct_answer == user_answer)
         tmp_ans = Answers(exam_id, username, user_answer, correct_answer)
         Session.add(tmp_ans)
-        if correct_answer == user_answer:
+        if str(correct_answer) == str(user_answer):
             number_of_correct_answers += 1
 
     grad = Grades(exam_id, username, number_of_correct_answers, total_answers)
