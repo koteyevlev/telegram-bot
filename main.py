@@ -4,6 +4,7 @@ import config
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
 
 from telebot import types
+import os
 from TexSoup import TexSoup
 from database import engine, Task, Exam, meta, Answers, Grades
 from sqlalchemy.orm import mapper, sessionmaker
@@ -13,6 +14,8 @@ flag_file = False
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
+    global flag_file
+    flag_file = False
     #sti = open('./sticker.webp', 'rb')
     #bot.send_sticker(message.chat.id, sti)
 
@@ -154,34 +157,68 @@ def callback_inline(call):
 usertmp = dict()
 
 def create_exam(id_exam):
-    exam = Exam(id_exam)
-    exam.task_num = 0
-    markup = types.ForceReply(selective=False)
-    password = bot.send_message(id_exam.chat.id, 'Придумайте пароль для экзамена', reply_markup=markup)
-    usertmp[id_exam.chat.id] = exam
-    bot.register_next_step_handler(password, create_ex_2)
+    Session = sessionmaker(bind=engine)
+    Session = Session()
+    if not all(ord(c) < 128 for c in id_exam.text):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Текущие тесты")
+        item2 = types.KeyboardButton("Создать тест")
+        item3 = types.KeyboardButton("Выгрузить результаты")
+
+        markup.add(item1, item2)
+        markup.add(item3)
+        bot.send_message(id_exam.chat.id,
+                         'В названии не должно быть символов не из ASCII', reply_markup=markup)
+    elif len(Session.query(Exam).filter_by(exam_id=id_exam.text).all()) > 0:
+        bot.send_message(id_exam.chat.id, 'Такой экзамен уже существует')
+    else:
+        try:
+            exam = Exam(id_exam)
+            exam.task_num = 0
+            markup = types.ForceReply(selective=False)
+            password = bot.send_message(id_exam.chat.id, 'Придумайте пароль для экзамена', reply_markup=markup)
+            usertmp[id_exam.chat.id] = exam
+            bot.register_next_step_handler(password, create_ex_2)
+        except:
+            bot.send_message(id_exam.chat.id, 'Не удалось создать экзамен. Пожалуйста проверьте валидность названия экзамена и файлов.')
 
 #flag_file = dict()
 
 def create_ex_2(password):
-    print("SP", password.text)
-    exam = usertmp[password.chat.id]
-    usertmp[password.chat.id] = None
-    exam.password = password.text
-    Session = sessionmaker(bind=engine)
-    Session = Session()
+    if not all(ord(c) < 128 for c in password.text):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Текущие тесты")
+        item2 = types.KeyboardButton("Создать тест")
+        item3 = types.KeyboardButton("Выгрузить результаты")
 
-    Session.add(exam)
-    Session.commit()
-    print(password.text)
+        markup.add(item1, item2)
+        markup.add(item3)
+        bot.send_message(password.chat.id,
+                         'В пароле не должно быть символов не из ASCII', reply_markup=markup)
+    else:
+        try:
+            print("SP", password.text)
+            exam = usertmp[password.chat.id]
+            usertmp[password.chat.id] = None
+            exam.password = password.text
+            Session = sessionmaker(bind=engine)
+            Session = Session()
 
-    global flag_file
-    flag_file = True
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1 = types.KeyboardButton("Сохранить экзамен")
-    item2 = types.KeyboardButton("Изменить экзамен")
-    markup.add(item1, item2)
-    bot.send_message(password.chat.id, 'Загрузите пожалуйста необходимое число вопросов в latex формате', reply_markup=markup)
+            Session.add(exam)
+            Session.commit()
+            print(password.text)
+        except:
+            bot.send_message(password.chat.id,
+                             'Не удалось создать экзамен. Пожалуйста проверьте валидность названия экзамена и файлов.')
+
+
+        global flag_file
+        flag_file = True
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Сохранить экзамен")
+        item2 = types.KeyboardButton("Изменить экзамен")
+        markup.add(item1, item2)
+        bot.send_message(password.chat.id, 'Загрузите пожалуйста необходимое число вопросов в latex формате', reply_markup=markup)
     #bot.register_next_step_handler(resp, )
 
 
@@ -189,24 +226,29 @@ def create_ex_2(password):
 @bot.message_handler(func=lambda message: flag_file, content_types=['document'])
 def create_task(file):
     if file.document:
-        Session = sessionmaker(bind=engine)
-        Session = Session()
-        raw = file.document.file_id
-        file_info = bot.get_file(raw)
-        downloaded_file = bot.download_file(file_info.file_path)
-        with open(raw+".tex", 'wb') as new_file:
-            new_file.write(downloaded_file)
-        last_exam = Session.query(Exam).filter_by(author=file.from_user.username).all()[-1]
-        last_exam.tasks_num += 1
-        Session.commit()
-        task = Task(TexSoup(open(raw+".tex").read()), last_exam.exam_id)
-        bot.send_message(file.chat.id, task.question)
-        #exam.task_list.append(task)
-        #print(exam.task_list)
+        try:
+            Session = sessionmaker(bind=engine)
+            Session = Session()
+            raw = file.document.file_id
+            print(raw)
+            file_info = bot.get_file(raw)
+            downloaded_file = bot.download_file(file_info.file_path)
+            with open(raw+".tex", 'wb') as new_file:
+                new_file.write(downloaded_file)
+            last_exam = Session.query(Exam).filter_by(author=file.from_user.username).all()[-1]
+            last_exam.tasks_num += 1
+            Session.commit()
+            task = Task(TexSoup(open(raw+".tex").read()), last_exam.exam_id)
+            bot.send_message(file.chat.id, task.question)
+            os.remove(raw+".tex")
+            #exam.task_list.append(task)
+            #print(exam.task_list)
 
 
-        Session.add(task)
-        Session.commit()
+            Session.add(task)
+            Session.commit()
+        except:
+            bot.send_message(file.chat.id, "Документ не валиден, пожалуйста проверьте формат.")
 
 
 
@@ -237,7 +279,10 @@ def show_results(id_ex):
 
 
         var += '\n\nВсего прошло тест - ' + str(len(grades))
-        var += '\nСреднее количество правильных ответов - ' + str(round(all_correct_answers / len(grades), 2))
+        try:
+            var += '\nСреднее количество правильных ответов - ' + str(round(all_correct_answers / len(grades), 2))
+        except:
+            pass
         bot.send_message(id_ex.chat.id, var)
     except:
         bot.send_message(id_ex.chat.id, "Нет такого экзамена")
