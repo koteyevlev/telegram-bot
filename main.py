@@ -26,7 +26,7 @@ def welcome(message):
     markup.add(teacher, student)
 
     bot.send_message(message.chat.id,
-                     "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>!\nБот созданный для проверки домашних заданий".format(message.from_user, bot.get_me()),
+                     "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>!\nБот созданный для проверки экзаменов и домашних заданий".format(message.from_user, bot.get_me()),
                      parse_mode='html', reply_markup=markup)
 
 
@@ -310,7 +310,7 @@ def sol_ex2(password):
     if ex.password != password.text: # или уже решал экзамен, или уже закрыт экзамен
         bot.send_message(password.chat.id, "Пароль не верный")
     elif len(grade) > 0:
-        bot.send_message(password.chat.id, "Вы уже проходили экзамен")
+        bot.send_message(password.chat.id, "Вы уже проходили этот экзамен")
     else:
         check = bot.send_message(password.chat.id, "На экзамен дается одна попытка\nКак только будете готовы, напишите \"+\"")
         bot.register_next_step_handler(check, sol_ex3)
