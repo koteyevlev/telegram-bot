@@ -306,7 +306,7 @@ def sol_ex2(password):
     Session = sessionmaker(bind=engine)
     Session = Session()
     ex = Session.query(Exam).filter_by(exam_id=usertmp[password.chat.id]).all()[0]
-    grade = Session.query(Grades).filter_by(username=password.from_user.username).all()
+    grade = Session.query(Grades).filter_by(username=password.from_user.username, exam_id=usertmp[password.chat.id]).all()
     if ex.password != password.text: # или уже решал экзамен, или уже закрыт экзамен
         bot.send_message(password.chat.id, "Пароль не верный")
     elif len(grade) > 0:

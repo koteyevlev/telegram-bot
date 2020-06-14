@@ -2,8 +2,8 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
 from sqlalchemy.orm import mapper, sessionmaker
 
 db_string = 'mysql+pymysql://root:root@localhost/telegram_bot'
-db_string = 'postgres://postgres:root@localhost:5432/tg_bot'
-db_string = 'postgres://dzsigjzudovcjn:e400de787c388754144763965acdc71b54fbd1d919c4b1f36a49082977f6a889@ec2-54-246-85-151.eu-west-1.compute.amazonaws.com:5432/dafd012ti92764'
+#db_string = 'postgres://postgres:root@localhost:5432/tg_bot'
+#db_string = 'postgres://dzsigjzudovcjn:e400de787c388754144763965acdc71b54fbd1d919c4b1f36a49082977f6a889@ec2-54-246-85-151.eu-west-1.compute.amazonaws.com:5432/dafd012ti92764'
 engine = create_engine(db_string, echo=True)
 
 conn = engine.connect()
@@ -18,7 +18,7 @@ class Exam:
       self.password = "root"
       self.tasks_num = 0
       self.number_of_res = 0
-      self.result_id = None
+
 
 class Task:
    def __init__(self, soup, exam_id=0):
