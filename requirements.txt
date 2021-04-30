@@ -26,7 +26,7 @@ pyTelegramBotAPI==3.6.7
 pytz==2019.3
 requests==2.23.0
 requests-oauthlib==1.3.0
-rsa==4.0
+rsa==4.7
 six==1.14.0
 SQLAlchemy==1.3.16
 TexSoup==0.2.1
